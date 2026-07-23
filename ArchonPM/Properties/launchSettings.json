@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ArchonPM (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "ArchonPM (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

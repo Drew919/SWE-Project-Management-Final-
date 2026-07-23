@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ArchonPM
+{
+    public class Risk
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Severity { get; set; }
+    }
+}
