@@ -90,7 +90,7 @@ namespace ArchonPM.Pages
                 _displayedProjects.Add(new ProjectListItem
                 {
                     ID = project.ID,
-                    Name = project.Name,
+                    Name = project.Name ?? string.Empty,
                     Status = project.Status,
                     OwnerLine = $"Owner: {project.Owner}",
                     DescriptionPreview = string.IsNullOrWhiteSpace(preview) ? "No description" : preview,
