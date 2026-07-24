@@ -27,6 +27,22 @@ namespace ArchonPM.Services
                 or ProjectRole.ProjectManager
                 or ProjectRole.SoftwareEngineer;
 
+        public static bool CanViewRisks(ProjectRole role) => true;
+
+        public static bool CanManageRisks(ProjectRole role) =>
+            role is ProjectRole.PrimaryAdmin
+                or ProjectRole.SecondaryAdmin
+                or ProjectRole.ProjectManager
+                or ProjectRole.SoftwareEngineer;
+
+        public static bool CanViewTimeEntries(ProjectRole role) => true;
+
+        public static bool CanLogTime(ProjectRole role) =>
+            role is ProjectRole.PrimaryAdmin
+                or ProjectRole.SecondaryAdmin
+                or ProjectRole.ProjectManager
+                or ProjectRole.SoftwareEngineer;
+
         public static bool CanViewMembers(ProjectRole role) => true;
 
         public static bool CanManageMembers(ProjectRole role) =>

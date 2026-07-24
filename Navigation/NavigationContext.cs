@@ -12,7 +12,9 @@ namespace ArchonPM.Navigation
     {
         Overview,
         Requirements,
-        PeopleAndRoles
+        PeopleAndRoles,
+        Risks,
+        TimeLog
     }
 
     public sealed class NavigationContext
@@ -48,6 +50,8 @@ namespace ArchonPM.Navigation
             ProjectSection.Overview => "Overview",
             ProjectSection.Requirements => "Requirements",
             ProjectSection.PeopleAndRoles => "People and Roles",
+            ProjectSection.Risks => "Risks",
+            ProjectSection.TimeLog => "Time Log",
             _ => section.ToString()
         };
     }

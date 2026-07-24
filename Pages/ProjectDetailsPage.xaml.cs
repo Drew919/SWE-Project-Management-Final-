@@ -29,6 +29,22 @@ namespace ArchonPM.Pages
         public Visibility RemoveVisibility { get; init; }
     }
 
+    public sealed class RiskItem
+    {
+        public int ID { get; init; }
+        public string Name { get; init; } = string.Empty;
+        public string Description { get; init; } = string.Empty;
+        public string PriorityDisplay { get; init; } = string.Empty;
+        public string StatusDisplay { get; init; } = string.Empty;
+        public Visibility EditVisibility { get; init; }
+    }
+
+    public sealed class TimeEntryItem
+    {
+        public string HeaderLine { get; init; } = string.Empty;
+        public string DetailLine { get; init; } = string.Empty;
+    }
+
     public sealed partial class ProjectDetailsPage : Page
     {
         private int _projectId;
@@ -37,12 +53,16 @@ namespace ArchonPM.Pages
         private bool _suppressPivotChange;
         private readonly ObservableCollection<RequirementItem> _requirements = new();
         private readonly ObservableCollection<MemberItem> _members = new();
+        private readonly ObservableCollection<RiskItem> _risks = new();
+        private readonly ObservableCollection<TimeEntryItem> _timeEntries = new();
 
         public ProjectDetailsPage()
         {
             InitializeComponent();
             RequirementsList.ItemsSource = _requirements;
             MembersList.ItemsSource = _members;
+            RisksList.ItemsSource = _risks;
+            TimeEntriesList.ItemsSource = _timeEntries;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -72,6 +92,8 @@ namespace ArchonPM.Pages
             {
                 1 => ProjectSection.Requirements,
                 2 => ProjectSection.PeopleAndRoles,
+                3 => ProjectSection.Risks,
+                4 => ProjectSection.TimeLog,
                 _ => ProjectSection.Overview
             };
             App.Current.MainWindow?.RefreshNavigationChrome();
@@ -83,6 +105,8 @@ namespace ArchonPM.Pages
             {
                 ProjectSection.Requirements => 1,
                 ProjectSection.PeopleAndRoles => 2,
+                ProjectSection.Risks => 3,
+                ProjectSection.TimeLog => 4,
                 _ => 0
             };
 
@@ -143,9 +167,17 @@ namespace ArchonPM.Pages
             AddMemberButton.Visibility = PermissionService.CanManageMembers(actingRole)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+            AddRiskButton.Visibility = PermissionService.CanManageRisks(actingRole)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            LogTimeButton.Visibility = PermissionService.CanLogTime(actingRole)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             RefreshRequirements(project, actingRole);
             RefreshMembers(project, actingRole);
+            RefreshRisks(project, actingRole);
+            RefreshTimeEntries(project);
         }
 
         private void EnsureActingMember(Project project)
@@ -245,6 +277,71 @@ namespace ArchonPM.Pages
             bool hasItems = _members.Count > 0;
             MembersList.Visibility = hasItems ? Visibility.Visible : Visibility.Collapsed;
             MembersEmptyText.Visibility = hasItems ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void RefreshRisks(Project project, ProjectRole actingRole)
+        {
+            _risks.Clear();
+            bool canEdit = PermissionService.CanManageRisks(actingRole);
+
+            foreach (Risk risk in project.RiskList)
+            {
+                _risks.Add(new RiskItem
+                {
+                    ID = risk.ID,
+                    Name = risk.Name,
+                    Description = risk.Description,
+                    PriorityDisplay = $"Severity: {risk.Priority}",
+                    StatusDisplay = $"Status: {risk.Status}",
+                    EditVisibility = canEdit ? Visibility.Visible : Visibility.Collapsed
+                });
+            }
+
+            bool hasItems = _risks.Count > 0;
+            RisksList.Visibility = hasItems ? Visibility.Visible : Visibility.Collapsed;
+            RisksEmptyText.Visibility = hasItems ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void RefreshTimeEntries(Project project)
+        {
+            _timeEntries.Clear();
+
+            foreach (TimeEntry entry in project.TimeEntryList)
+            {
+                string requirementName = entry.RequirementId.HasValue
+                    ? project.RequirmentList.FirstOrDefault(r => r.ID == entry.RequirementId.Value)?.Name ?? "Removed requirement"
+                    : "General";
+
+                _timeEntries.Add(new TimeEntryItem
+                {
+                    HeaderLine = $"{entry.Phase} — {entry.Hours:0.##} h",
+                    DetailLine = $"{requirementName} · {entry.StaffName} · {entry.Date:M/d/yyyy}"
+                });
+            }
+
+            bool hasItems = _timeEntries.Count > 0;
+            TimeEntriesList.Visibility = hasItems ? Visibility.Visible : Visibility.Collapsed;
+            TimeEmptyText.Visibility = hasItems ? Visibility.Collapsed : Visibility.Visible;
+
+            if (hasItems)
+            {
+                var totals = ProjectService.EffortPhases
+                    .Select(phase => new
+                    {
+                        Phase = phase,
+                        Hours = project.TimeEntryList.Where(t => t.Phase == phase).Sum(t => t.Hours)
+                    })
+                    .Where(t => t.Hours > 0)
+                    .Select(t => $"{t.Phase}: {t.Hours:0.##} h");
+
+                double total = project.TimeEntryList.Sum(t => t.Hours);
+                TimeTotalsText.Text = $"Totals — {string.Join("  ·  ", totals)}  ·  All phases: {total:0.##} h";
+                TimeTotalsText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TimeTotalsText.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void ShowError(string message)
@@ -560,6 +657,187 @@ namespace ArchonPM.Pages
             catch (Exception ex)
             {
                 await ShowMessageAsync("Unable to remove person", ex.Message);
+            }
+        }
+
+        private async void AddRiskButton_Click(object sender, RoutedEventArgs e)
+        {
+            var nameBox = new TextBox { Header = "Risk Name" };
+            var descriptionBox = new TextBox
+            {
+                Header = "Description",
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                Height = 100
+            };
+            var priorityBox = new ComboBox { Header = "Severity" };
+            foreach (RiskPriority priority in Enum.GetValues<RiskPriority>())
+            {
+                priorityBox.Items.Add(new ComboBoxItem { Content = priority.ToString(), Tag = priority });
+            }
+            priorityBox.SelectedIndex = 1;
+
+            var statusBox = new ComboBox { Header = "Status" };
+            foreach (string status in ProjectService.RiskStatuses)
+            {
+                statusBox.Items.Add(status);
+            }
+            statusBox.SelectedIndex = 0;
+
+            var panel = new StackPanel { Spacing = 12 };
+            panel.Children.Add(nameBox);
+            panel.Children.Add(descriptionBox);
+            panel.Children.Add(priorityBox);
+            panel.Children.Add(statusBox);
+
+            var dialog = new ContentDialog
+            {
+                Title = "Add Risk",
+                Content = panel,
+                PrimaryButtonText = "Add",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = XamlRoot
+            };
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            try
+            {
+                RiskPriority priority = priorityBox.SelectedItem is ComboBoxItem item && item.Tag is RiskPriority selected
+                    ? selected
+                    : RiskPriority.Medium;
+
+                App.Current.ProjectService.AddRisk(
+                    _projectId,
+                    nameBox.Text?.Trim() ?? string.Empty,
+                    descriptionBox.Text?.Trim() ?? string.Empty,
+                    priority,
+                    statusBox.SelectedItem?.ToString() ?? "Open",
+                    _actingMemberId);
+                RefreshPage();
+            }
+            catch (Exception ex)
+            {
+                await ShowMessageAsync("Unable to add risk", ex.Message);
+            }
+        }
+
+        private async void UpdateRiskStatusButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button button || button.Tag is not int riskId)
+            {
+                return;
+            }
+
+            Risk? risk = App.Current.ProjectService.GetRisks(_projectId).FirstOrDefault(r => r.ID == riskId);
+            if (risk == null)
+            {
+                await ShowMessageAsync("Not found", "That risk no longer exists.");
+                RefreshPage();
+                return;
+            }
+
+            var statusBox = new ComboBox { Header = "Status", MinWidth = 260 };
+            foreach (string status in ProjectService.RiskStatuses)
+            {
+                statusBox.Items.Add(status);
+            }
+            statusBox.SelectedItem = ProjectService.RiskStatuses.FirstOrDefault(s => s == risk.Status)
+                                     ?? ProjectService.RiskStatuses[0];
+
+            var dialog = new ContentDialog
+            {
+                Title = $"Update Status — {risk.Name}",
+                Content = statusBox,
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = XamlRoot
+            };
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            try
+            {
+                App.Current.ProjectService.UpdateRiskStatus(
+                    _projectId, riskId, statusBox.SelectedItem?.ToString() ?? risk.Status, _actingMemberId);
+                RefreshPage();
+            }
+            catch (Exception ex)
+            {
+                await ShowMessageAsync("Unable to update risk", ex.Message);
+            }
+        }
+
+        private async void LogTimeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var phaseBox = new ComboBox { Header = "Phase" };
+            foreach (string phase in ProjectService.EffortPhases)
+            {
+                phaseBox.Items.Add(phase);
+            }
+            phaseBox.SelectedIndex = 0;
+
+            var hoursBox = new TextBox { Header = "Hours", PlaceholderText = "e.g. 2.5" };
+
+            var requirementBox = new ComboBox { Header = "Requirement (optional)" };
+            requirementBox.Items.Add(new ComboBoxItem { Content = "General / none", Tag = null });
+            foreach (Requirement requirement in App.Current.ProjectService.GetRequirements(_projectId))
+            {
+                requirementBox.Items.Add(new ComboBoxItem { Content = requirement.Name, Tag = requirement.ID });
+            }
+            requirementBox.SelectedIndex = 0;
+
+            var panel = new StackPanel { Spacing = 12 };
+            panel.Children.Add(phaseBox);
+            panel.Children.Add(hoursBox);
+            panel.Children.Add(requirementBox);
+
+            var dialog = new ContentDialog
+            {
+                Title = "Log Time",
+                Content = panel,
+                PrimaryButtonText = "Log",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Primary,
+                XamlRoot = XamlRoot
+            };
+
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!double.TryParse(hoursBox.Text?.Trim(), out double hours))
+                {
+                    await ShowMessageAsync("Invalid hours", "Enter a number of hours, like 2 or 2.5.");
+                    return;
+                }
+
+                int? requirementId = requirementBox.SelectedItem is ComboBoxItem item && item.Tag is int id
+                    ? id
+                    : null;
+
+                App.Current.ProjectService.AddTimeEntry(
+                    _projectId,
+                    phaseBox.SelectedItem?.ToString() ?? string.Empty,
+                    hours,
+                    requirementId,
+                    _actingMemberId);
+                RefreshPage();
+            }
+            catch (Exception ex)
+            {
+                await ShowMessageAsync("Unable to log time", ex.Message);
             }
         }
 

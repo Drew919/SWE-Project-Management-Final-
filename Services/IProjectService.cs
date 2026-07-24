@@ -20,5 +20,12 @@ namespace ArchonPM.Services
         IReadOnlyList<Requirement> GetRequirements(int projectId);
         void AddRequirement(int projectId, string name, string description, string category, int actorMemberId);
         void UpdateRequirement(int projectId, int requirementId, string name, string description, string category, int actorMemberId);
+
+        IReadOnlyList<Risk> GetRisks(int projectId);
+        void AddRisk(int projectId, string name, string description, RiskPriority priority, string status, int actorMemberId);
+        void UpdateRiskStatus(int projectId, int riskId, string status, int actorMemberId);
+
+        IReadOnlyList<TimeEntry> GetTimeEntries(int projectId);
+        void AddTimeEntry(int projectId, string phase, double hours, int? requirementId, int actorMemberId);
     }
 }

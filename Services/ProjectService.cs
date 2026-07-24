@@ -11,6 +11,15 @@ namespace ArchonPM.Services
         private int _nextProjectId = 1;
         private int _nextMemberId = 1;
         private int _nextRequirementId = 1;
+        private int _nextRiskId = 1;
+        private int _nextTimeEntryId = 1;
+
+        public static readonly string[] EffortPhases =
+        {
+            "Requirements Analysis", "Designing", "Coding", "Testing", "Project Management"
+        };
+
+        public static readonly string[] RiskStatuses = { "Open", "Mitigating", "Resolved" };
 
         public IReadOnlyList<Project> GetAllProjects() => _projects.AsReadOnly();
 
@@ -271,6 +280,111 @@ namespace ArchonPM.Services
             requirement.Name = name.Trim();
             requirement.Description = description?.Trim() ?? string.Empty;
             requirement.Catagory = NormalizeCategory(category);
+        }
+
+        public IReadOnlyList<Risk> GetRisks(int projectId)
+        {
+            Project project = GetRequiredProject(projectId);
+            return project.RiskList.ToList().AsReadOnly();
+        }
+
+        public void AddRisk(int projectId, string name, string description, RiskPriority priority, string status, int actorMemberId)
+        {
+            Project project = GetRequiredProject(projectId);
+            Staff actor = GetRequiredMember(project, actorMemberId);
+
+            if (!PermissionService.CanManageRisks(actor.Role))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to add risks.");
+            }
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Risk name is required.", nameof(name));
+            }
+
+            ValidateRiskStatus(status);
+
+            project.RiskList.AddLast(new Risk
+            {
+                ID = _nextRiskId++,
+                Name = name.Trim(),
+                Description = description?.Trim() ?? string.Empty,
+                Priority = priority,
+                Status = status.Trim()
+            });
+        }
+
+        public void UpdateRiskStatus(int projectId, int riskId, string status, int actorMemberId)
+        {
+            Project project = GetRequiredProject(projectId);
+            Staff actor = GetRequiredMember(project, actorMemberId);
+
+            if (!PermissionService.CanManageRisks(actor.Role))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to update risks.");
+            }
+
+            Risk? risk = project.RiskList.FirstOrDefault(r => r.ID == riskId);
+            if (risk == null)
+            {
+                throw new KeyNotFoundException($"Risk {riskId} was not found.");
+            }
+
+            ValidateRiskStatus(status);
+            risk.Status = status.Trim();
+        }
+
+        public IReadOnlyList<TimeEntry> GetTimeEntries(int projectId)
+        {
+            Project project = GetRequiredProject(projectId);
+            return project.TimeEntryList.ToList().AsReadOnly();
+        }
+
+        public void AddTimeEntry(int projectId, string phase, double hours, int? requirementId, int actorMemberId)
+        {
+            Project project = GetRequiredProject(projectId);
+            Staff actor = GetRequiredMember(project, actorMemberId);
+
+            if (!PermissionService.CanLogTime(actor.Role))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to log time.");
+            }
+
+            if (hours <= 0)
+            {
+                throw new ArgumentException("Hours must be greater than zero.", nameof(hours));
+            }
+
+            string trimmedPhase = phase?.Trim() ?? string.Empty;
+            if (!EffortPhases.Any(p => p.Equals(trimmedPhase, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ArgumentException("Phase must be one of the tracked effort phases.", nameof(phase));
+            }
+
+            if (requirementId.HasValue && !project.RequirmentList.Any(r => r.ID == requirementId.Value))
+            {
+                throw new KeyNotFoundException($"Requirement {requirementId.Value} was not found.");
+            }
+
+            project.TimeEntryList.AddLast(new TimeEntry
+            {
+                ID = _nextTimeEntryId++,
+                StaffName = actor.Name,
+                Hours = hours,
+                Date = DateTime.Now,
+                Phase = EffortPhases.First(p => p.Equals(trimmedPhase, StringComparison.OrdinalIgnoreCase)),
+                RequirementId = requirementId
+            });
+        }
+
+        private static void ValidateRiskStatus(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status) ||
+                !RiskStatuses.Any(s => s.Equals(status.Trim(), StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ArgumentException("Status must be Open, Mitigating, or Resolved.", nameof(status));
+            }
         }
 
         private void TransferPrimaryAdmin(Project project, string newOwnerName)

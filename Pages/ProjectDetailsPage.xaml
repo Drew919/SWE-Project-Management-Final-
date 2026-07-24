@@ -140,6 +140,87 @@
                     </ListView>
                 </Grid>
             </PivotItem>
+
+            <PivotItem Header="Risks">
+                <Grid Padding="0,12,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="AddRiskButton" Content="Add Risk" Click="AddRiskButton_Click" Margin="0,0,0,12"/>
+                    <TextBlock
+                        x:Name="RisksEmptyText"
+                        Grid.Row="1"
+                        Text="No risks yet."
+                        Opacity="0.7"
+                        Visibility="Collapsed"/>
+                    <ListView
+                        x:Name="RisksList"
+                        Grid.Row="1"
+                        SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:RiskItem">
+                                <Grid Padding="0,8" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="WrapWholeWords"/>
+                                        <TextBlock Text="{x:Bind PriorityDisplay}" FontSize="12" Opacity="0.75"/>
+                                        <TextBlock Text="{x:Bind StatusDisplay}" FontSize="14" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{x:Bind Description}" FontSize="14" TextWrapping="WrapWholeWords"/>
+                                    </StackPanel>
+                                    <Button
+                                        Grid.Column="1"
+                                        Content="Update Status"
+                                        Tag="{x:Bind ID}"
+                                        Visibility="{x:Bind EditVisibility}"
+                                        Click="UpdateRiskStatusButton_Click"
+                                        VerticalAlignment="Top"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </PivotItem>
+
+            <PivotItem Header="Time Log">
+                <Grid Padding="0,12,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="LogTimeButton" Content="Log Time" Click="LogTimeButton_Click" Margin="0,0,0,12"/>
+                    <TextBlock
+                        x:Name="TimeTotalsText"
+                        Grid.Row="1"
+                        FontSize="14"
+                        TextWrapping="WrapWholeWords"
+                        Margin="0,0,0,12"
+                        Visibility="Collapsed"/>
+                    <TextBlock
+                        x:Name="TimeEmptyText"
+                        Grid.Row="2"
+                        Text="No time logged yet."
+                        Opacity="0.7"
+                        Visibility="Collapsed"/>
+                    <ListView
+                        x:Name="TimeEntriesList"
+                        Grid.Row="2"
+                        SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:TimeEntryItem">
+                                <StackPanel Padding="0,8" Spacing="2">
+                                    <TextBlock Text="{x:Bind HeaderLine}" FontWeight="SemiBold" TextWrapping="WrapWholeWords"/>
+                                    <TextBlock Text="{x:Bind DetailLine}" FontSize="12" Opacity="0.75" TextWrapping="WrapWholeWords"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </PivotItem>
         </Pivot>
     </Grid>
 </Page>

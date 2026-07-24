@@ -10,6 +10,7 @@ namespace ArchonPM.Objects
         public DateTime Date { get; set; }
         public string Phase { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public int? RequirementId { get; set; }
 
         public TimeEntry(int id, string staffName, double hours, DateTime date, string phase, string desc)
         {
