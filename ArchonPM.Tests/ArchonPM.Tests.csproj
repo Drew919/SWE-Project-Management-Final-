@@ -20,7 +20,9 @@
   <ItemGroup>
     <Compile Include="..\Services\IProjectService.cs" Link="Services\IProjectService.cs" />
     <Compile Include="..\Services\ProjectService.cs" Link="Services\ProjectService.cs" />
+    <Compile Include="..\Services\PermissionService.cs" Link="Services\PermissionService.cs" />
     <Compile Include="..\Objects\Project.cs" Link="Objects\Project.cs" />
+    <Compile Include="..\Objects\ProjectRole.cs" Link="Objects\ProjectRole.cs" />
     <Compile Include="..\Objects\Staff.cs" Link="Objects\Staff.cs" />
     <Compile Include="..\Objects\Risk.cs" Link="Objects\Risk.cs" />
     <Compile Include="..\Objects\Requirement.cs" Link="Objects\Requirement.cs" />

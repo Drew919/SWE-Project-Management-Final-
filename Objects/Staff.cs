@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ArchonPM.Objects
 {
     public class Staff
     {
-        public string name { get; set; }
-        public LinkedList<Deliverable> AssignedTasks { get; set; } 
+        public int ID { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public ProjectRole Role { get; set; }
+        public LinkedList<Deliverable> AssignedTasks { get; set; } = new();
     }
 }

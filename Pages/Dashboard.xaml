@@ -8,7 +8,105 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="25" RowSpacing="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-    </Grid>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Dashboard" FontSize="30" FontWeight="SemiBold"/>
+                <TextBlock
+                    Text="A quick look at your ArchonPM projects for this session."
+                    FontSize="14"
+                    Opacity="0.75"
+                    TextWrapping="WrapWholeWords"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
+                <Button Content="Create Project" Click="CreateProject_Click" Style="{StaticResource AccentButtonStyle}"/>
+                <Button Content="View All Projects" Click="ViewProjects_Click"/>
+            </StackPanel>
+
+            <Grid x:Name="StatsGrid" Grid.Row="2" ColumnSpacing="12" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource DashboardStatBorder}" Grid.Column="0">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Total" Opacity="0.7"/>
+                        <TextBlock x:Name="TotalCountText" FontSize="28" FontWeight="SemiBold" Text="0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource DashboardStatBorder}" Grid.Column="1">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Planning" Opacity="0.7"/>
+                        <TextBlock x:Name="PlanningCountText" FontSize="28" FontWeight="SemiBold" Text="0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource DashboardStatBorder}" Grid.Column="2">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="In Progress" Opacity="0.7"/>
+                        <TextBlock x:Name="InProgressCountText" FontSize="28" FontWeight="SemiBold" Text="0"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource DashboardStatBorder}" Grid.Column="3">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Completed" Opacity="0.7"/>
+                        <TextBlock x:Name="CompletedCountText" FontSize="28" FontWeight="SemiBold" Text="0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <StackPanel x:Name="EmptyStatePanel" Grid.Row="3" Spacing="12" Visibility="Collapsed">
+                <TextBlock
+                    Text="No projects yet. Create a project to see totals and recent activity here."
+                    FontSize="16"
+                    Opacity="0.75"
+                    TextWrapping="WrapWholeWords"/>
+                <Button Content="Create Project" Click="CreateProject_Click" HorizontalAlignment="Left"/>
+            </StackPanel>
+
+            <StackPanel x:Name="RecentSection" Grid.Row="4" Spacing="12" Visibility="Collapsed">
+                <TextBlock Text="Recent projects" FontSize="20" FontWeight="SemiBold"/>
+                <ListView
+                    x:Name="RecentProjectsList"
+                    SelectionMode="None"
+                    IsItemClickEnabled="True"
+                    ItemClick="RecentProjectsList_ItemClick">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:ProjectListItem">
+                            <Border
+                                Padding="14"
+                                Margin="0,0,0,8"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                CornerRadius="4">
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Name}" FontSize="16" FontWeight="SemiBold" TextWrapping="WrapWholeWords"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Status}" FontWeight="SemiBold" Margin="12,0,0,0"/>
+                                    </Grid>
+                                    <TextBlock Text="{x:Bind OwnerLine}" FontSize="13" Opacity="0.8"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Page>

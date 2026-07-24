@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ArchonPM.Objects
+﻿namespace ArchonPM.Objects
 {
     public class Requirement
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Catagory { get; set; }
-        
+        public int ID { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        /// <summary>Functional or Non-Functional. Existing field name retained.</summary>
+        public string Catagory { get; set; } = "Functional";
     }
 }

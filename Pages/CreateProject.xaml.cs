@@ -69,7 +69,18 @@ namespace ArchonPM
                 };
 
                 await dialog.ShowAsync();
-                Frame.Navigate(typeof(ViewProjects));
+                Frame.Navigate(typeof(ProjectDetailsPage), newProject.ID);
+            }
+            catch (Exception ex)
+            {
+                var errorDialog = new ContentDialog
+                {
+                    Title = "Unable to create project",
+                    Content = ex.Message,
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+                await errorDialog.ShowAsync();
             }
             finally
             {
