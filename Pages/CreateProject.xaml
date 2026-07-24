@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+   <Page
+    x:Class="ArchonPM.CreateProject"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer>
+
+        <StackPanel
+            Margin="25"
+            Spacing="12">
+
+            <TextBlock
+                Text="Create Project"
+                FontSize="30"
+                FontWeight="SemiBold"/>
+
+            <TextBox
+                x:Name="NameBox"
+                Header="Project Name"
+                PlaceholderText="Enter project name"/>
+
+            <TextBox
+                x:Name="OwnerBox"
+                Header="Project Owner"
+                PlaceholderText="Enter owner"/>
+
+            <TextBox
+                x:Name="DescriptionBox"
+                Header="Description"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                Height="120"/>
+
+            <ComboBox
+                x:Name="StatusBox"
+                Header="Status"
+                SelectedIndex="0">
+
+                <ComboBoxItem Content="Planning"/>
+                <ComboBoxItem Content="Not Started"/>
+                <ComboBoxItem Content="In Progress"/>
+                <ComboBoxItem Content="Completed"/>
+
+            </ComboBox>
+
+            <Button
+                Content="Create Project"
+                Click="CreateProjectClick"/>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</Page>
