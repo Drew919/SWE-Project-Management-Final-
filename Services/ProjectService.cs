@@ -19,6 +19,17 @@ namespace ArchonPM.Services
             return _projects.FirstOrDefault(p => p.ID == projectId);
         }
 
+        public Project? GetProjectByName(string name)
+        {
+            return _projects.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool DeleteProject(int projectId)
+        {
+            Project? project = GetProjectById(projectId);
+            return project != null && _projects.Remove(project);
+        }
+
         public void AddProject(Project project)
         {
             ArgumentNullException.ThrowIfNull(project);

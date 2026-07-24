@@ -13,5 +13,6 @@ namespace ArchonPM.Objects
         public LinkedList<Risk> RiskList { get; set; } = new();
         public LinkedList<Requirement> RequirmentList { get; set; } = new();
         public LinkedList<Deliverable> DeliverableList { get; set; } = new();
+        public LinkedList<TimeEntry> TimeEntryList { get; set; } = new();
     }
 }

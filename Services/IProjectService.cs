@@ -7,7 +7,9 @@ namespace ArchonPM.Services
     {
         IReadOnlyList<Project> GetAllProjects();
         Project? GetProjectById(int projectId);
+        Project? GetProjectByName(string name);
         void AddProject(Project project);
+        bool DeleteProject(int projectId);
         void UpdateProject(int projectId, string name, string description, string owner, string status, int actorMemberId);
 
         IReadOnlyList<Staff> GetProjectMembers(int projectId);

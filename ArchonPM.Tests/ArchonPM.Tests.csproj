@@ -28,5 +28,6 @@
     <Compile Include="..\Objects\Requirement.cs" Link="Objects\Requirement.cs" />
     <Compile Include="..\Objects\Deliverable.cs" Link="Objects\Deliverable.cs" />
     <Compile Include="..\Objects\Enums.cs" Link="Objects\Enums.cs" />
+    <Compile Include="..\Objects\TimeEntry.cs" Link="Objects\TimeEntry.cs" />
   </ItemGroup>
 </Project>
