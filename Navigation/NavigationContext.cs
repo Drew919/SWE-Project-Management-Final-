@@ -35,7 +35,7 @@ namespace ArchonPM.Navigation
         {
             return CurrentPage switch
             {
-                AppPageKind.Dashboard => "Dashboard",
+                AppPageKind.Dashboard => string.Empty,
                 AppPageKind.Projects => "Projects",
                 AppPageKind.CreateProject => "New Project",
                 AppPageKind.ProjectDetails when !string.IsNullOrWhiteSpace(CurrentProjectName) =>

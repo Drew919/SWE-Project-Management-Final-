@@ -21,11 +21,7 @@
             </Grid.RowDefinitions>
 
             <TitleBar x:Name="AppTitleBar"
-                      Title="ArchonPM">
-                <TitleBar.IconSource>
-                    <FontIconSource Glyph="&#xF4AA;"/>
-                </TitleBar.IconSource>
-            </TitleBar>
+                      Title="ArchonPM"/>
 
             <Border Grid.Row="1"
                     Padding="12,8"
@@ -41,10 +37,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- ArchonPM Branding -->
-                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                        <FontIcon Glyph="&#xF4AA;" FontSize="20"/>
-                        <TextBlock Text="ArchonPM" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <TextBlock Text="ArchonPM" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
 
                     <Button x:Name="DashboardButton"
                             Grid.Column="1"
