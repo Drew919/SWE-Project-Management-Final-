@@ -94,7 +94,7 @@ namespace ArchonPM.Pages
                     Status = project.Status,
                     OwnerLine = $"Owner: {project.Owner}",
                     DescriptionPreview = string.IsNullOrWhiteSpace(preview) ? "No description" : preview,
-                    CountsLine = $"{memberCount} members · {requirementCount} requirements"
+                    CountsLine = $"{memberCount} members: {requirementCount} requirements"
                 });
             }
 

@@ -39,7 +39,7 @@ namespace ArchonPM.Navigation
                 AppPageKind.Projects => "Projects",
                 AppPageKind.CreateProject => "New Project",
                 AppPageKind.ProjectDetails when !string.IsNullOrWhiteSpace(CurrentProjectName) =>
-                    $"{CurrentProjectName} · {GetSectionDisplayName(CurrentSection)}",
+                    $"{CurrentProjectName}: {GetSectionDisplayName(CurrentSection)}",
                 AppPageKind.ProjectDetails => "Project Details",
                 _ => string.Empty
             };

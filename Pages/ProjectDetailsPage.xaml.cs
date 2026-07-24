@@ -314,8 +314,8 @@ namespace ArchonPM.Pages
 
                 _timeEntries.Add(new TimeEntryItem
                 {
-                    HeaderLine = $"{entry.Phase} — {entry.Hours:0.##} h",
-                    DetailLine = $"{requirementName} · {entry.StaffName} · {entry.Date:M/d/yyyy}"
+                    HeaderLine = $"{entry.Phase} - {entry.Hours:0.##} h",
+                    DetailLine = $"{requirementName}: {entry.StaffName}: {entry.Date:M/d/yyyy}"
                 });
             }
 
@@ -335,7 +335,7 @@ namespace ArchonPM.Pages
                     .Select(t => $"{t.Phase}: {t.Hours:0.##} h");
 
                 double total = project.TimeEntryList.Sum(t => t.Hours);
-                TimeTotalsText.Text = $"Totals — {string.Join("  ·  ", totals)}  ·  All phases: {total:0.##} h";
+                TimeTotalsText.Text = $"Totals - {string.Join(", ", totals)}, all phases: {total:0.##} h";
                 TimeTotalsText.Visibility = Visibility.Visible;
             }
             else
@@ -591,7 +591,7 @@ namespace ArchonPM.Pages
 
             var dialog = new ContentDialog
             {
-                Title = $"Edit Role — {member.Name}",
+                Title = $"Edit Role - {member.Name}",
                 Content = roleBox,
                 PrimaryButtonText = "Save",
                 CloseButtonText = "Cancel",
@@ -751,7 +751,7 @@ namespace ArchonPM.Pages
 
             var dialog = new ContentDialog
             {
-                Title = $"Update Status — {risk.Name}",
+                Title = $"Update Status - {risk.Name}",
                 Content = statusBox,
                 PrimaryButtonText = "Save",
                 CloseButtonText = "Cancel",
