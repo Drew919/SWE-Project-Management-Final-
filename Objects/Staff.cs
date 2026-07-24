@@ -1,14 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArchonPM.Objects
 {
     public class Staff
     {
-        public string name { get; set; }
-        public LinkedList<Deliverable> AssignedTasks { get; set; } 
+        public int ID { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public List<Deliverable> AssignedTasks { get; set; } = new List<Deliverable>();
+
+        public Staff(int id, string name)
+        {
+            ID = id;
+            Name = name;
+        }
+
+        public Staff() { }
+
+        public override string ToString() => $"[{ID}] {Name}";
     }
 }

@@ -25,5 +25,6 @@
     <Compile Include="..\Objects\Risk.cs" Link="Objects\Risk.cs" />
     <Compile Include="..\Objects\Requirement.cs" Link="Objects\Requirement.cs" />
     <Compile Include="..\Objects\Deliverable.cs" Link="Objects\Deliverable.cs" />
+    <Compile Include="..\Objects\Enums.cs" Link="Objects\Enums.cs" />
   </ItemGroup>
 </Project>
