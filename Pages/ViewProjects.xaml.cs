@@ -37,7 +37,7 @@ namespace ArchonPM.Pages
 
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(CreateProject));
+            App.Current.MainWindow?.NavigateToCreateProject();
         }
 
         private void FilterChanged(object sender, RoutedEventArgs e)
@@ -49,7 +49,7 @@ namespace ArchonPM.Pages
         {
             if (e.ClickedItem is ProjectListItem item)
             {
-                Frame.Navigate(typeof(ProjectDetailsPage), item.ID);
+                App.Current.MainWindow?.NavigateToProject(item.ID);
             }
         }
 

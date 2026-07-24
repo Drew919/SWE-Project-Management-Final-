@@ -69,7 +69,16 @@ namespace ArchonPM
                 };
 
                 await dialog.ShowAsync();
-                Frame.Navigate(typeof(ProjectDetailsPage), newProject.ID);
+
+                App.Current.Navigation.CurrentSection = Navigation.ProjectSection.Overview;
+                if (App.Current.MainWindow != null)
+                {
+                    App.Current.MainWindow.NavigateToProject(newProject.ID, Navigation.ProjectSection.Overview);
+                }
+                else
+                {
+                    Frame.Navigate(typeof(ProjectDetailsPage), newProject.ID);
+                }
             }
             catch (Exception ex)
             {

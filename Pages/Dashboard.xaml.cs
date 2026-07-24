@@ -20,24 +20,27 @@ namespace ArchonPM.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            App.Current.Navigation.CurrentPage = Navigation.AppPageKind.Dashboard;
+            App.Current.Navigation.ClearProject();
+            App.Current.MainWindow?.RefreshNavigationChrome();
             RefreshDashboard();
         }
 
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(CreateProject));
+            App.Current.MainWindow?.NavigateToCreateProject();
         }
 
         private void ViewProjects_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(ViewProjects));
+            App.Current.MainWindow?.NavigateToProjects();
         }
 
         private void RecentProjectsList_ItemClick(object sender, ItemClickEventArgs e)
         {
             if (e.ClickedItem is ProjectListItem item)
             {
-                Frame.Navigate(typeof(ProjectDetailsPage), item.ID);
+                App.Current.MainWindow?.NavigateToProject(item.ID);
             }
         }
 

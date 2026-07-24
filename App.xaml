@@ -17,6 +17,14 @@
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
             </Style>
+
+            <Style x:Key="ContentCardBorder" TargetType="Border" BasedOn="{StaticResource DashboardStatBorder}"/>
+
+            <!-- Card style for project details list items -->
+            <Style x:Key="DetailListCardBorder" TargetType="Border" BasedOn="{StaticResource ContentCardBorder}">
+                <Setter Property="Padding" Value="14"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

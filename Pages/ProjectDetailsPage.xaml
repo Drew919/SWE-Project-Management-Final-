@@ -16,10 +16,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-            <Button x:Name="BackButton" Content="Back to Projects" Click="BackButton_Click"/>
-            <TextBlock x:Name="PageTitle" Text="Project Details" FontSize="30" FontWeight="SemiBold" VerticalAlignment="Center"/>
-        </StackPanel>
+        <TextBlock x:Name="PageTitle" Text="Project Details" FontSize="30" FontWeight="SemiBold" VerticalAlignment="Center"/>
 
         <TextBlock
             x:Name="ErrorText"
@@ -37,7 +34,7 @@
                 SelectionChanged="ActingAsBox_SelectionChanged"/>
         </StackPanel>
 
-        <Pivot x:Name="DetailsPivot" Grid.Row="3" Visibility="Collapsed">
+        <Pivot x:Name="DetailsPivot" Grid.Row="3" Visibility="Collapsed" SelectionChanged="DetailsPivot_SelectionChanged">
             <PivotItem Header="Overview">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,12,0,0">
                     <StackPanel Spacing="12" MaxWidth="720" HorizontalAlignment="Left">

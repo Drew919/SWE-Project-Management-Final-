@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ArchonPM.Navigation;
 using ArchonPM.Objects;
 using ArchonPM.Services;
 using Microsoft.UI.Xaml;
@@ -33,6 +34,7 @@ namespace ArchonPM.Pages
         private int _projectId;
         private int _actingMemberId;
         private bool _suppressActingAsChange;
+        private bool _suppressPivotChange;
         private readonly ObservableCollection<RequirementItem> _requirements = new();
         private readonly ObservableCollection<MemberItem> _members = new();
 
@@ -55,11 +57,41 @@ namespace ArchonPM.Pages
 
             _projectId = projectId;
             RefreshPage();
+            ApplySectionFromContext();
+            App.Current.MainWindow?.RefreshNavigationChrome();
         }
 
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void DetailsPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Frame.Navigate(typeof(ViewProjects));
+            if (_suppressPivotChange || DetailsPivot.SelectedIndex < 0)
+            {
+                return;
+            }
+
+            App.Current.Navigation.CurrentSection = DetailsPivot.SelectedIndex switch
+            {
+                1 => ProjectSection.Requirements,
+                2 => ProjectSection.PeopleAndRoles,
+                _ => ProjectSection.Overview
+            };
+            App.Current.MainWindow?.RefreshNavigationChrome();
+        }
+
+        private void ApplySectionFromContext()
+        {
+            int index = App.Current.Navigation.CurrentSection switch
+            {
+                ProjectSection.Requirements => 1,
+                ProjectSection.PeopleAndRoles => 2,
+                _ => 0
+            };
+
+            _suppressPivotChange = true;
+            if (DetailsPivot.Items.Count > index)
+            {
+                DetailsPivot.SelectedIndex = index;
+            }
+            _suppressPivotChange = false;
         }
 
         private void ActingAsBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -86,6 +118,9 @@ namespace ArchonPM.Pages
             DetailsPivot.Visibility = Visibility.Visible;
             ActingAsPanel.Visibility = Visibility.Visible;
             PageTitle.Text = project.Name;
+            App.Current.Navigation.CurrentProjectId = project.ID;
+            App.Current.Navigation.CurrentProjectName = project.Name;
+            App.Current.Navigation.CurrentPage = AppPageKind.ProjectDetails;
 
             EnsureActingMember(project);
             PopulateActingAsBox(project);
@@ -218,6 +253,8 @@ namespace ArchonPM.Pages
             ActingAsPanel.Visibility = Visibility.Collapsed;
             ErrorText.Text = message;
             ErrorText.Visibility = Visibility.Visible;
+            App.Current.Navigation.ClearProject();
+            App.Current.MainWindow?.RefreshNavigationChrome();
         }
 
         private async void EditProjectButton_Click(object sender, RoutedEventArgs e)
@@ -279,6 +316,7 @@ namespace ArchonPM.Pages
                     statusBox.SelectedItem?.ToString() ?? project.Status,
                     _actingMemberId);
                 RefreshPage();
+                App.Current.MainWindow?.RefreshNavigationChrome();
             }
             catch (Exception ex)
             {
