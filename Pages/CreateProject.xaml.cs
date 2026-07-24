@@ -3,6 +3,7 @@ using ArchonPM.Pages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Linq;
 
 namespace ArchonPM
 {
@@ -24,6 +25,7 @@ namespace ArchonPM
 
             string name = NameBox.Text?.Trim() ?? string.Empty;
             string owner = OwnerBox.Text?.Trim() ?? string.Empty;
+            string ownerEmail = OwnerEmailBox.Text?.Trim() ?? string.Empty;
             string description = DescriptionBox.Text?.Trim() ?? string.Empty;
             string? status = (StatusBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
 
@@ -59,6 +61,15 @@ namespace ArchonPM
                 };
 
                 App.Current.ProjectService.AddProject(newProject);
+
+                if (!string.IsNullOrWhiteSpace(ownerEmail))
+                {
+                    Staff? primary = newProject.StaffList.FirstOrDefault(m => m.Role == ProjectRole.PrimaryAdmin);
+                    if (primary != null)
+                    {
+                        primary.Email = ownerEmail;
+                    }
+                }
 
                 var dialog = new ContentDialog
                 {

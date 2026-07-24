@@ -26,6 +26,11 @@
                 PlaceholderText="Enter owner"/>
 
             <TextBox
+                x:Name="OwnerEmailBox"
+                Header="Owner Email (optional)"
+                PlaceholderText="Enter owner email"/>
+
+            <TextBox
                 x:Name="DescriptionBox"
                 Header="Description"
                 AcceptsReturn="True"
