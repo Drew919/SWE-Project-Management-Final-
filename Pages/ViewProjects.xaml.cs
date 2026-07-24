@@ -1,31 +1,39 @@
+using ArchonPM.Objects;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using System.Collections.ObjectModel;
 
 namespace ArchonPM.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class ViewProjects : Page
     {
+        private readonly ObservableCollection<Project> _displayedProjects = new();
+
         public ViewProjects()
         {
             InitializeComponent();
+            ProjectsList.ItemsSource = _displayedProjects;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            RefreshProjects();
+        }
+
+        private void RefreshProjects()
+        {
+            _displayedProjects.Clear();
+
+            foreach (Project project in App.Current.ProjectService.GetAllProjects())
+            {
+                _displayedProjects.Add(project);
+            }
+
+            bool hasProjects = _displayedProjects.Count > 0;
+            ProjectsList.Visibility = hasProjects ? Visibility.Visible : Visibility.Collapsed;
+            EmptyStateText.Visibility = hasProjects ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

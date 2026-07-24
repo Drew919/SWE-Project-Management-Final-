@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>ArchonPM.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Services\IProjectService.cs" Link="Services\IProjectService.cs" />
+    <Compile Include="..\Services\ProjectService.cs" Link="Services\ProjectService.cs" />
+    <Compile Include="..\Objects\Project.cs" Link="Objects\Project.cs" />
+    <Compile Include="..\Objects\Staff.cs" Link="Objects\Staff.cs" />
+    <Compile Include="..\Objects\Risk.cs" Link="Objects\Risk.cs" />
+    <Compile Include="..\Objects\Requirement.cs" Link="Objects\Requirement.cs" />
+    <Compile Include="..\Objects\Deliverable.cs" Link="Objects\Deliverable.cs" />
+  </ItemGroup>
+</Project>
