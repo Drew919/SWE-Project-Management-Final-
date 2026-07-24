@@ -13,12 +13,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  <!-- Console prototype under Main/ and unused root Project.cs are not part of the WinUI app. -->
   <ItemGroup>
-    <Compile Remove="Main\**\*" />
-    <None Include="Main\**\*" />
-    <Compile Remove="Project.cs" />
-    <None Include="Project.cs" />
     <Compile Remove="ArchonPM.Tests\**\*" />
     <None Include="ArchonPM.Tests\**\*" />
   </ItemGroup>
