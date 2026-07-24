@@ -1,22 +1,11 @@
-using System;
-
-namespace ArchonPM.Objects
+﻿namespace ArchonPM.Objects
 {
     public class Requirement
     {
         public int ID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public RequirementCategory Category { get; set; }
-
-        public Requirement(int id, string name, string desc, RequirementCategory category)
-        {
-            ID = id;
-            Name = name;
-            Description = desc;
-            Category = category;
-        }
-
-        public Requirement() { }
+        /// <summary>Functional or Non-Functional. Existing field name retained.</summary>
+        public string Catagory { get; set; } = "Functional";
     }
 }

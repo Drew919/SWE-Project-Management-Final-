@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ArchonPM.Objects
 {
@@ -7,16 +6,8 @@ namespace ArchonPM.Objects
     {
         public int ID { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<Deliverable> AssignedTasks { get; set; } = new List<Deliverable>();
-
-        public Staff(int id, string name)
-        {
-            ID = id;
-            Name = name;
-        }
-
-        public Staff() { }
-
-        public override string ToString() => $"[{ID}] {Name}";
+        public string? Email { get; set; }
+        public ProjectRole Role { get; set; }
+        public LinkedList<Deliverable> AssignedTasks { get; set; } = new();
     }
 }
